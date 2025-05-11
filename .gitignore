@@ -1,30 +1,32 @@
-echo "# IDE files
+# IDE files
 .idea/
 *.iml
 *.iws
 
-Build artifacts
+# Build artifacts
 target/
 build/
 *.war
 *.jar
 *.ear
 
-WildFly logs and runtime files
+# WildFly logs and runtime files
 wildfly/standalone/log/
 wildfly/standalone/tmp/
 wildfly/standalone/data/
 
-OS-specific files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-Local configuration
-*.properties
-*.xml
-!persistence.xml  # Keep if version-controlled
+# Local configuration
+# Ignore XML files in specific directories (e.g., configuration or temp files)
+wildfly/standalone/configuration/*.xml
+# Do not ignore XML files in source or resource directories
+!src/main/resources/META-INF/persistence.xml
 
-Miscellaneous
+# Miscellaneous
+*.properties
 *.log
 *.class
-*.bak" > .gitignore
+*.bak
