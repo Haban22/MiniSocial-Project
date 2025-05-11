@@ -1,0 +1,30 @@
+echo "# IDE files
+.idea/
+*.iml
+*.iws
+
+Build artifacts
+target/
+build/
+*.war
+*.jar
+*.ear
+
+WildFly logs and runtime files
+wildfly/standalone/log/
+wildfly/standalone/tmp/
+wildfly/standalone/data/
+
+OS-specific files
+.DS_Store
+Thumbs.db
+
+Local configuration
+*.properties
+*.xml
+!persistence.xml  # Keep if version-controlled
+
+Miscellaneous
+*.log
+*.class
+*.bak" > .gitignore
