@@ -3,6 +3,7 @@ package com.minisocial.service;
 import com.minisocial.entity.Post;
 import com.minisocial.entity.User;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,9 @@ public class PostService {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Inject
+    private NotificationService notificationService;
 
     @Transactional
     public void createPost(Long userId, Post post) {

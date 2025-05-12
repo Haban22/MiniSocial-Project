@@ -3,15 +3,7 @@ package com.minisocial.service;
 import com.minisocial.entity.Group;
 import com.minisocial.entity.User;
 import com.minisocial.entity.GroupMembership;
-import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
-import jakarta.jms.Connection;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
-import jakarta.jms.MessageProducer;
-import jakarta.jms.Queue;
-import jakarta.jms.Session;
-import jakarta.jms.TextMessage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -21,12 +13,6 @@ public class GroupService {
 
     @PersistenceContext
     private EntityManager em;
-
-//    @Resource(mappedName = "java:/ConnectionFactory")
-//    private ConnectionFactory connectionFactory;
-//
-//    @Resource(mappedName = "java:/jms/queue/GroupNotifications")
-//    private Queue queue;
 
     @Transactional
     public Group createGroup(Group group, Long creatorId) {
@@ -76,10 +62,6 @@ public class GroupService {
         User admin = em.find(User.class, userId);
         System.out.println("Deleting group " + group.getName() + " by admin " + admin.getName());
         em.remove(group);
-        /*
-        // Uncomment to enable JMS notification for group deletion
-        sendNotification("Group " + group.getName() + " was deleted by " + admin.getName());
-        */
     }
 
     public boolean isGroupAdmin(Long groupId, Long userId) {
@@ -96,18 +78,4 @@ public class GroupService {
             return false;
         }
     }
-
-//    private void sendNotification(String message) {
-//        try {
-//            Connection connection = connectionFactory.createConnection();
-//            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//            MessageProducer producer = session.createProducer(queue);
-//            TextMessage textMessage = session.createTextMessage(message);
-//            producer.send(textMessage);
-//            session.close();
-//            connection.close();
-//        } catch (JMSException e) {
-//            throw new RuntimeException("Failed to send JMS notification", e);
-//        }
-//    }
 }

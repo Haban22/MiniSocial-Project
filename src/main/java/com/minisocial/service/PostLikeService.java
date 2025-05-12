@@ -4,6 +4,7 @@ import com.minisocial.entity.PostLike;
 import com.minisocial.entity.Post;
 import com.minisocial.entity.User;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,9 @@ public class PostLikeService {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Inject
+    private NotificationService notificationService;
 
     @Transactional
     public void addLike(Long userId, Long postId) {
@@ -36,5 +40,17 @@ public class PostLikeService {
         postLike.setUser(user);
         postLike.setCreatedAt(LocalDateTime.now());
         em.persist(postLike);
+
+        // Send notification to post owner if not self
+        if (!post.getAuthor().getId().equals(userId)) {
+            notificationService.sendNotification(
+                    "POST_LIKED",
+                    userId,
+                    post.getAuthor().getId(),
+                    postId,
+                    user.getName() + " liked your post"
+            );
+        }
+
     }
 }

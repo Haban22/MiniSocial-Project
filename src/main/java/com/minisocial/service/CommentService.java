@@ -4,6 +4,7 @@ import com.minisocial.entity.Comment;
 import com.minisocial.entity.Post;
 import com.minisocial.entity.User;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,9 @@ public class CommentService {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Inject
+    private NotificationService notificationService;
 
     @Transactional
     public void addComment(Long userId, Long postId, String content) {
@@ -33,6 +37,17 @@ public class CommentService {
         comment.setAuthor(user);
         comment.setCreatedAt(LocalDateTime.now());
         em.persist(comment);
+
+        if (!post.getAuthor().getId().equals(userId)) {
+            notificationService.sendNotification(
+                    "POST_COMMENTED",
+                    userId,
+                    post.getAuthor().getId(),
+                    postId,
+                    user.getName() + " commented on your post: " + content
+            );
+        }
+
     }
 
     public List<Comment> getCommentsForPost(Long postId) {

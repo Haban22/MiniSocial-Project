@@ -4,6 +4,7 @@ import com.minisocial.entity.FriendRequest;
 import com.minisocial.entity.Friendship;
 import com.minisocial.entity.User;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,9 @@ import java.util.List;
 public class ConnectionService {
     @PersistenceContext
     private EntityManager em;
+
+    @Inject
+    private NotificationService notificationService;
 
     @Transactional
     public FriendRequest sendFriendRequest(Long senderId, Long receiverId) {
@@ -39,6 +43,16 @@ public class ConnectionService {
         request.setStatus("PENDING");
         request.setCreatedAt(LocalDateTime.now());
         em.persist(request);
+
+        // Send notification to receiver
+        notificationService.sendNotification(
+                "FRIEND_REQUEST",
+                senderId,
+                receiverId,
+                request.getId(),
+                sender.getName() + " sent you a friend request"
+        );
+
         return request;
     }
 
