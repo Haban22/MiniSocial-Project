@@ -8,6 +8,9 @@
     <class>com.minisocial.entity.User</class>
     <class>com.minisocial.entity.FriendRequest</class>
     <class>com.minisocial.entity.Friendship</class>
+    <class>com.minisocial.entity.Post</class>
+    <class>com.minisocial.entity.Comment</class>
+    <class>com.minisocial.entity.PostLike</class>
     <properties>
       <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
