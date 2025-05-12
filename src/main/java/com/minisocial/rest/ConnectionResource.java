@@ -1,13 +1,16 @@
 package com.minisocial.rest;
 
+import com.minisocial.dto.UserProfileDTO;
 import com.minisocial.entity.FriendRequest;
-import com.minisocial.entity.Friendship;
+import com.minisocial.entity.User;
 import com.minisocial.service.ConnectionService;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/connections")
 public class ConnectionResource {
@@ -67,15 +70,47 @@ public class ConnectionResource {
     @Path("/pending-requests")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPendingRequests(@QueryParam("userId") Long userId) {
-        List<FriendRequest> requests = connectionService.getPendingRequests(userId);
-        return Response.ok(requests).build();
+        try {
+            if (userId == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\": \"User ID must be provided\"}")
+                        .build();
+            }
+            List<FriendRequest> requests = connectionService.getPendingRequests(userId);
+            return Response.ok(requests).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\": \"" + e.getMessage() + "\"}")
+                    .build();
+        }
     }
 
     @GET
     @Path("/friends")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFriends(@QueryParam("userId") Long userId) {
-        List<Friendship> friends = connectionService.getFriends(userId);
-        return Response.ok(friends).build();
+        try {
+            if (userId == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("{\"message\": \"User ID must be provided\"}")
+                        .build();
+            }
+            List<User> friends = connectionService.getFriends(userId);
+            // Map User entities to UserProfileDTO
+            List<UserProfileDTO> friendProfiles = friends.stream()
+                    .map(user -> new UserProfileDTO(
+                            user.getId(),
+                            user.getName(),
+                            user.getEmail(),
+                            user.getBio(),
+                            user.getRole()
+                    ))
+                    .collect(Collectors.toList());
+            return Response.ok(friendProfiles).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\": \"" + e.getMessage() + "\"}")
+                    .build();
+        }
     }
 }

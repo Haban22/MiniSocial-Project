@@ -1,14 +1,16 @@
 package com.minisocial.service;
 
-import com.minisocial.entity.FriendRequest;
 import com.minisocial.entity.Friendship;
 import com.minisocial.entity.User;
+import com.minisocial.entity.FriendRequest;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -95,9 +97,19 @@ public class ConnectionService {
                 .getResultList();
     }
 
-    public List<Friendship> getFriends(Long userId) {
-        return em.createQuery("SELECT f FROM Friendship f WHERE f.user1.id = :userId OR f.user2.id = :userId", Friendship.class)
+    public List<User> getFriends(Long userId) {
+        List<Friendship> friendships = em.createQuery("SELECT f FROM Friendship f WHERE f.user1.id = :userId OR f.user2.id = :userId", Friendship.class)
                 .setParameter("userId", userId)
                 .getResultList();
+        List<User> friends = new ArrayList<>();
+        for (Friendship friendship : friendships) {
+            // Add the "other" user as the friend
+            if (friendship.getUser1().getId().equals(userId)) {
+                friends.add(friendship.getUser2());
+            } else {
+                friends.add(friendship.getUser1());
+            }
+        }
+        return friends;
     }
 }
