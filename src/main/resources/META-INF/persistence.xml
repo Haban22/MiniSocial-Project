@@ -11,6 +11,9 @@
     <class>com.minisocial.entity.Post</class>
     <class>com.minisocial.entity.Comment</class>
     <class>com.minisocial.entity.PostLike</class>
+    <class>com.minisocial.entity.Group</class>
+    <class>com.minisocial.entity.GroupMembership</class>
+    <class>com.minisocial.entity.GroupPost</class>
     <properties>
       <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>

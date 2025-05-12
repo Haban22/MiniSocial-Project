@@ -2,6 +2,8 @@ package com.minisocial.entity;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +26,11 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private String role; // "user" or "admin"
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<GroupMembership> groupMemberships = new ArrayList<>();
+
 
     // Getters and Setters
     public Long getId() { return id; }
